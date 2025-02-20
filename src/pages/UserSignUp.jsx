@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { userDataContext } from "../context/UserContext";
 
 const UserSignUp = () => {
+  const { userData, settUserData } = useContext(userDataContext);
   const [signupData, setSignUpData] = useState({
     firstname: "",
     lastname: "",
