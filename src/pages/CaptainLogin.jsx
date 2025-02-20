@@ -74,7 +74,7 @@ const CaptainLogin = () => {
             {/* <Link to={"/signup"}>Forget Password</Link> */}
           </div>
         </div>
-        <div className="bg-orange-300 w-full font-semibold rounded-xl text-center p-2 font-semibold">
+        <div className="bg-orange-300 w-full  rounded-xl text-center p-2 font-semibold">
           <Link to={"/login"}>Sign in as a user</Link>
         </div>
       </div>
