@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { userDataContext } from "../context/UserContext";
-
+import axios from "axios";
 const UserSignUp = () => {
-  const { userData, settUserData } = useContext(userDataContext);
+  const navigate = useNavigate();
+  const { userData, setUserData } = useContext(userDataContext);
   const [signupData, setSignUpData] = useState({
     firstname: "",
     lastname: "",
@@ -18,14 +19,26 @@ const UserSignUp = () => {
     });
   };
 
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
-    setSignUpData({
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-    });
+    const newUser = {
+      fullname: {
+        firstname: signupData.firstname,
+        lastname: signupData.lastname,
+      },
+      email: signupData.email,
+      password: signupData.password,
+    };
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/api/user/register`,
+      newUser
+    );
+    if (response.status == 201) {
+      const data = response.data;
+      setUserData(data.user);
+      localStorage.setItem("token", data.token);
+      navigate("/home");
+    }
   };
   return (
     <div className="w-full h-screen p-7">

@@ -1,8 +1,12 @@
-import React from 'react'
-import { useState } from 'react';
-import { Link } from 'react-router-dom';  
+import React, { useContext } from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { CaptainDataContext } from "../context/CaptainContext";
+import axios from "axios";
 
 const CaptainSignUp = () => {
+  const { captainData, setCaptainData } = useContext(CaptainDataContext);
+  const navigate = useNavigate();
   const [signupData, setSignUpData] = useState({
     firstname: "",
     lastname: "",
@@ -17,9 +21,37 @@ const CaptainSignUp = () => {
     });
   };
 
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
-    
+    const newCaptain = {
+      fullname: {
+        firstname: signupData.firstname,
+        lastname: signupData.lastname,
+      },
+      email: signupData.email,
+      password: signupData.password,
+      vehicle: {
+        color: signupData.vehicleColor,
+        plate: signupData.plateNumber,
+        capacity: signupData.capacity,
+        vehicleType: signupData.vehicleType,
+      },
+    };
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/captain/register`,
+        newCaptain
+      );
+      if (response.status === 201) {
+        const data = response.data;
+        setCaptainData(data.captain);
+        localStorage.setItem("token", data.token);
+        navigate("/captain-home");
+      }
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
+
     setSignUpData({
       firstname: "",
       lastname: "",
@@ -77,7 +109,7 @@ const CaptainSignUp = () => {
             <h1 className="text-xl mb-2 font-medium">Enter Your Password</h1>
             <input
               onChange={(e) => handleOnChange(e)}
-              className="w-full border-2 bg-[#eeeeee]  rounded-md text-lg p-2 mb-5 placeholder:text-base"
+              className="w-full border-2 bg-[#eeeeee]  rounded-md text-lg p-2 mb-3 placeholder:text-base"
               type="password"
               name="password"
               id="password"
@@ -86,6 +118,53 @@ const CaptainSignUp = () => {
               value={signupData.password}
               placeholder="password"
             />
+            <h1 className="text-xl mb-2 font-medium">Vehicle Informations</h1>
+            <div className="flex justify-between w-full gap-5">
+              <input
+                onChange={(e) => handleOnChange(e)}
+                className="w-1/2 bg-[#eeeeee] border rounded-md text-lg p-2 mb-3 placeholder:text-base"
+                type="text"
+                name="vehicleColor"
+                id="vehicleColor"
+                required
+                placeholder="Vehicle Color"
+              />
+              <input
+                onChange={(e) => handleOnChange(e)}
+                className="w-1/2 bg-[#eeeeee] border rounded-md text-lg p-2 mb-3 placeholder:text-base"
+                type="text"
+                name="plateNumber"
+                id="plateNumber"
+                required
+                placeholder="Plate Number"
+              />
+            </div>
+            <div className="flex justify-between w-full gap-5">
+              <input
+                onChange={(e) => handleOnChange(e)}
+                className="w-1/2 bg-[#eeeeee] border rounded-md text-lg p-2 mb-3 placeholder:text-base"
+                type="number"
+                name="capacity"
+                id="capacity"
+                required
+                placeholder="Vehicle Capacity"
+              />
+              <select
+                onChange={(e) => handleOnChange(e)}
+                className="w-1/2 bg-[#eeeeee] border rounded-md text-lg p-2 mb-3 placeholder:text-base"
+                name="vehicleType"
+                id="vehicleType"
+                required
+              >
+                <option value="">Select Vehicle Type</option>
+                <option value="car">car</option>
+                <option value="auto">auto</option>
+                <option value="motorcycle" selected>
+                  moto
+                </option>
+              </select>
+            </div>
+
             <button
               type="submit"
               className="bg-[#111] text-[#fff] w-full block p-2 text-center rounded-xl"
@@ -96,7 +175,10 @@ const CaptainSignUp = () => {
           <div className="w-full text-center mt-5">
             <p className="text-center">
               Already have an account ?{" "}
-              <Link to={"/captain-login"} className=" text-md rounded-xl text-blue-500">
+              <Link
+                to={"/captain-login"}
+                className=" text-md rounded-xl text-blue-500"
+              >
                 Login here
               </Link>
             </p>
@@ -113,6 +195,6 @@ const CaptainSignUp = () => {
       </div>
     </div>
   );
-}
+};
 
-export default CaptainSignUp
+export default CaptainSignUp;
