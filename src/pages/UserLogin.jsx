@@ -6,7 +6,10 @@ import { userDataContext } from "../context/UserContext";
 const UserLogin = () => {
   const navigate = useNavigate();
   const { userData, setUserData } = useContext(userDataContext);
-  const [loginData, setLoginData] = useState({});
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
 
   const handleOnChange = (e) => {
     setLoginData({

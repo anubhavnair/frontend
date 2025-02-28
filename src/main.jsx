@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App.jsx";
 import UserContext from "./context/UserContext.jsx";
 import CaptainContext from "./context/CaptainContext.jsx";
-
+import "remixicon/fonts/remixicon.css";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <CaptainContext>
